@@ -16,7 +16,7 @@ provider "azurerm" {
 }
 
 data "azurerm_cosmosdb_account" "example" {
-  name                = "tfex-cosmosdb-account"
+  name                = "tfex-cosmosdb-account1"
   resource_group_name = "tfex-cosmosdb-account-rg"
 }
 
