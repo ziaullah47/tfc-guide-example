@@ -9,6 +9,7 @@ resource "azurerm_servicebus_namespace" "main" {
   sku                 = var.sku
   capacity            = var.capacity
   tags                = var.tags
+  namespace_id        = var.name
 }
 
 resource "azurerm_servicebus_namespace_authorization_rule" "main" {
