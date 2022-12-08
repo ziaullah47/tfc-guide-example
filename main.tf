@@ -1,24 +1,3 @@
-# Set the Azure Provider source and version being used
-#terraform {
- # required_version = ">= 0.14"
-
-  #required_providers {
-   # azurerm = {
-    #  source  = "hashicorp/azurerm"
-     # version = "~> 3.1.0"
-    #}
-  #}
-#}
-
-# Configure the Microsoft Azure provider
-provider "azurerm" {
-  features {}
-}
-
-#data "azurerm_cosmosdb_account" "example" {
- # name                = "tfex-cosmosdb-account1"
-  #resource_group_name = "tfex-cosmosdb-account-rg"
-#}
 data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
