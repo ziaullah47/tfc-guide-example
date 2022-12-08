@@ -1,10 +1,12 @@
 variable "name" {
   type        = string
+  default     = "Standardnamespace"
   description = "The name of the namespace."
 }
 
 variable "resource_group_name" {
   type        = string
+  default     = "resource_group_name"
   description = "The name of an existing resource group."
 }
 
