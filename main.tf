@@ -9,15 +9,15 @@ resource "azurerm_servicebus_namespace" "main" {
   sku                 = var.sku
   capacity            = var.capacity
   tags                = var.tags
-  namespace_id        = var.name
+  #namespace_id        = var.name
 }
 
 resource "azurerm_servicebus_namespace_authorization_rule" "main" {
   count = length(local.authorization_rules)
 
   name                = local.authorization_rules[count.index].name
-  namespace_name      = azurerm_servicebus_namespace.main.name
-  resource_group_name = data.azurerm_resource_group.main.name
+  #namespace_name      = azurerm_servicebus_namespace.main.name
+  #resource_group_name = data.azurerm_resource_group.main.name
 
   listen = contains(local.authorization_rules[count.index].rights, "listen") ? true : false
   send   = contains(local.authorization_rules[count.index].rights, "send") ? true : false
@@ -28,8 +28,8 @@ resource "azurerm_servicebus_topic" "main" {
   count = length(local.topics)
 
   name                = local.topics[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
+  #resource_group_name = data.azurerm_resource_group.main.name
+  #namespace_name      = azurerm_servicebus_namespace.main.name
 
   status                       = local.topics[count.index].status
   auto_delete_on_idle          = local.topics[count.index].auto_delete_on_idle
@@ -99,8 +99,8 @@ resource "azurerm_servicebus_queue" "main" {
   count = length(local.queues)
 
   name                = local.queues[count.index].name
-  resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.main.name
+  #resource_group_name = data.azurerm_resource_group.main.name
+  #namespace_name      = var.name
 
   auto_delete_on_idle                  = local.queues[count.index].auto_delete_on_idle
   default_message_ttl                  = local.queues[count.index].default_message_ttl
