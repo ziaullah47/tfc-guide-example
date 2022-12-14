@@ -69,24 +69,22 @@ resource "azurerm_cosmosdb_mongo_collection" "coll" {
 
 }
 
-data "azurerm_client_config" "current" { }
-
-data "azuread_user" "current_user" {
-  object_id = data.azurerm_client_config.current.object_id
+output "identity" {
+   value = azurerm_cosmosdb_mongo_collection.identity
+}
+   
+output "identity_identity_ids" {
+   value = azurerm_cosmosdb_mongo_collection.identity.*.identity_ids
 }
 
-resource "azurerm_resource_group" "example-rg" {
-  name     = "example-rg"
-  location = "westus"
-  tags = {
-    userCreated = data.azuread_user.current_user.user_principal_name
-  }
+output "identity_principal_id" {
+  value = azurerm_cosmosdb_mongo_collection.identity.*.principal_id
 }
 
-output "object_id" {
-  value = data.azurerm_client_config.current.object_id
+output "identity_tenant_id"{
+   value = azurerm_cosmosdb_mongo_collection.identity.*.tenant_id
 }
 
-output "user_principal_name" {
-  value = data.azuread_user.current_user.user_principal_name
+output "identity_type" {
+    value = azurerm_cosmosdb_mongo_collection.identity.*.type
 }
