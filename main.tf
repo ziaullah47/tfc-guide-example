@@ -41,6 +41,11 @@ resource "azurerm_cosmosdb_account" "acc" {
     location          = var.resource_group_location
     failover_priority = 0
   }
+  
+  
+  tags = {
+    userCreated = data.azuread_user.current_user.user_principal_name
+  }
 }
 
 resource "azurerm_cosmosdb_mongo_database" "mongodb" {
@@ -67,8 +72,4 @@ resource "azurerm_cosmosdb_mongo_collection" "coll" {
   }
 
   depends_on = [azurerm_cosmosdb_mongo_database.mongodb]
-
-  tags = {
-    userCreated = data.azuread_user.current_user.user_principal_name
-  }
 }
