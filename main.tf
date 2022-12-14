@@ -50,6 +50,8 @@ resource "azurerm_cosmosdb_mongo_database" "mongodb" {
   throughput          = 400
 }
 
+data "azurerm_client_config" "current" { }
+
 resource "azurerm_cosmosdb_mongo_collection" "coll" {
   name                = "cosmosmongodbcollection"
   resource_group_name = azurerm_cosmosdb_account.acc.resource_group_name
@@ -66,25 +68,7 @@ resource "azurerm_cosmosdb_mongo_collection" "coll" {
 
   depends_on = [azurerm_cosmosdb_mongo_database.mongodb]
 
-
-}
-
-output "identity" {
-   value = azurerm_cosmosdb_account.acc.identity
-}
-   
-output "identity_identity_ids" {
-   value = azurerm_cosmosdb_account.acc.identity.*.identity_ids
-}
-
-output "identity_principal_id" {
-  value = azurerm_cosmosdb_account.acc.identity.*.principal_id
-}
-
-output "identity_tenant_id"{
-   value = azurerm_cosmosdb_account.acc.identity.*.tenant_id
-}
-
-output "identity_type" {
-    value = azurerm_cosmosdb_account.acc.identity.*.type
+  tags = {
+    userCreated = data.azuread_user.current_user.user_principal_name
+  }
 }
