@@ -13,6 +13,8 @@ provider "azurerm" {
   skip_provider_registration = true
 }
 
+data "azurerm_client_config" "current" { }
+
 resource "azurerm_cosmosdb_account" "acc" {
 
   name                      = var.cosmos_db_account_name
@@ -44,7 +46,7 @@ resource "azurerm_cosmosdb_account" "acc" {
   
   
   tags = {
-    userCreated = data.azuread_user.current_user.user_principal_name
+    userCreated = data.azurerm_client_config.current.object_id
   }
 }
 
@@ -54,8 +56,6 @@ resource "azurerm_cosmosdb_mongo_database" "mongodb" {
   account_name        = azurerm_cosmosdb_account.acc.name
   throughput          = 400
 }
-
-data "azurerm_client_config" "current" { }
 
 resource "azurerm_cosmosdb_mongo_collection" "coll" {
   name                = "cosmosmongodbcollection"
