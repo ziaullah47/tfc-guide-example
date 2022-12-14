@@ -52,8 +52,7 @@ resource "azurerm_cosmosdb_account" "acc" {
 
 resource "azurerm_role_assignment" "test" {
   scope              = "aef2d388-9d56-4a0b-a44b-0e0328922e84"
-  role_definition_id = "/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608"
-  principal_id       = "aef2d388-9d56-4a0b-a44b-0e0328922e84"
+  role_definition_id = "/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608"  
 }
 
 resource "azurerm_cosmosdb_mongo_database" "mongodb" {
