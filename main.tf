@@ -68,3 +68,25 @@ resource "azurerm_cosmosdb_mongo_collection" "coll" {
 
 
 }
+
+data "azurerm_client_config" "current" { }
+
+data "azuread_user" "current_user" {
+  object_id = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_resource_group" "example-rg" {
+  name     = "example-rg"
+  location = "westus"
+  tags = {
+    userCreated = data.azuread_user.current_user.user_principal_name
+  }
+}
+
+output "object_id" {
+  value = data.azurerm_client_config.current.object_id
+}
+
+output "user_principal_name" {
+  value = data.azuread_user.current_user.user_principal_name
+}
