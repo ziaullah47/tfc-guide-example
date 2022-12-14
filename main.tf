@@ -70,21 +70,21 @@ resource "azurerm_cosmosdb_mongo_collection" "coll" {
 }
 
 output "identity" {
-   value = azurerm_cosmosdb_mongo_collection.identity
+   value = azurerm_cosmosdb_account.acc.identity
 }
    
 output "identity_identity_ids" {
-   value = azurerm_cosmosdb_mongo_collection.identity.*.identity_ids
+   value = azurerm_cosmosdb_account.acc.identity.*.identity_ids
 }
 
 output "identity_principal_id" {
-  value = azurerm_cosmosdb_mongo_collection.identity.*.principal_id
+  value = azurerm_cosmosdb_account.acc.identity.*.principal_id
 }
 
 output "identity_tenant_id"{
-   value = azurerm_cosmosdb_mongo_collection.identity.*.tenant_id
+   value = azurerm_cosmosdb_account.acc.identity.*.tenant_id
 }
 
 output "identity_type" {
-    value = azurerm_cosmosdb_mongo_collection.identity.*.type
+    value = azurerm_cosmosdb_account.acc.identity.*.type
 }
