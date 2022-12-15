@@ -41,81 +41,70 @@ resource "azurerm_role_assignment" "example" {
   principal_id       = data.azurerm_client_config.example.object_id
 }
 
+resource "azurerm_policy_definition" "policy" {
+  name         = "accTestPolicy"
+  policy_type  = "Custom"
+  mode         = "Indexed"
+  display_name = "acceptance test policy definition"
+
+  metadata = <<METADATA
+    {
+    "category": "Cosmos DB"
+    }
+
+METADATA
 
 
-
-
-
-#data "azurerm_client_config" "current" { }
-
-resource "azurerm_cosmosdb_account" "acc" {
-
-  name                      = var.cosmos_db_account_name
-  location                  = var.resource_group_location
-  resource_group_name       = var.resource_group_name
-  offer_type                = "Standard"
-  kind                      = "MongoDB"
-  enable_automatic_failover = true
-
-  capabilities {
-    name = "EnableMongo"
+  policy_rule = <<POLICY_RULE
+ {
+    "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.DocumentDB/databaseAccounts"
+          },
+          {
+            "field": "Microsoft.DocumentDB/databaseAccounts/disableLocalAuth",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450"
+          ],
+          "conflictEffect": "audit",
+          "operations": [
+            {
+              "condition": "[greaterOrEquals(requestContext().apiVersion, '2021-06-15')]",
+              "operation": "addOrReplace",
+              "field": "Microsoft.DocumentDB/databaseAccounts/disableLocalAuth",
+              "value": true
+            }
+          ]
+        }
+      }
   }
+POLICY_RULE
 
-  consistency_policy {
-    consistency_level       = "BoundedStaleness"
-    max_interval_in_seconds = 400
-    max_staleness_prefix    = 200000
+
+  parameters = <<PARAMETERS
+ {
+    "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      }
   }
+PARAMETERS
 
-  geo_location {
-    location          = var.failover_location
-    failover_priority = 1
-  }
-
-  geo_location {
-    location          = var.resource_group_location
-    failover_priority = 0
-  }
-  
-  
-  tags = {
-    primary = data.azurerm_subscription.primary.id,
-     principal_id = data.azurerm_client_config.example.object_id    
-  }
-}
-
-#data "azurerm_subscription" "primary" {
-#}
-
-#data "azurerm_client_config" "example" {
-#}
-
-#resource "azurerm_role_assignment" "test" {
- # scope                = data.azurerm_subscription.primary.id
- # role_definition_name = "Resource Policy Contributor"
- # principal_id         = data.azurerm_client_config.example.object_id
-#}
-
-resource "azurerm_cosmosdb_mongo_database" "mongodb" {
-  name                = "cosmosmongodb"
-  resource_group_name = azurerm_cosmosdb_account.acc.resource_group_name
-  account_name        = azurerm_cosmosdb_account.acc.name
-  throughput          = 400
-}
-
-resource "azurerm_cosmosdb_mongo_collection" "coll" {
-  name                = "cosmosmongodbcollection"
-  resource_group_name = azurerm_cosmosdb_account.acc.resource_group_name
-  account_name        = azurerm_cosmosdb_account.acc.name
-  database_name       = azurerm_cosmosdb_mongo_database.mongodb.name
-
-  default_ttl_seconds = "777"
-  shard_key           = "uniqueKey"
-  throughput          = 400
-
-  lifecycle {
-    ignore_changes = [index]
-  }
-
-  depends_on = [azurerm_cosmosdb_mongo_database.mongodb]
 }
